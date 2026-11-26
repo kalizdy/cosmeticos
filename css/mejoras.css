@@ -18,6 +18,8 @@ body.inventario-pwa{
   background:linear-gradient(180deg,rgba(4,15,29,.58),rgba(4,15,29,.94)),radial-gradient(900px 480px at 68% 12%,rgba(53,195,242,.18),transparent 60%),url('../img/hero-cosmetics.jpg') center/cover fixed;
 }
 :root[data-theme="light"] body.inventario-pwa{background:linear-gradient(180deg,rgba(233,241,247,.78),rgba(233,241,247,.96)),radial-gradient(900px 480px at 68% 12%,rgba(11,126,168,.12),transparent 60%),url('../img/hero-cosmetics.jpg') center/cover fixed}
+.skip-link{position:fixed;left:12px;top:-70px;z-index:500;padding:10px 14px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:900;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:10px}
 a.btn{display:inline-flex;align-items:center;justify-content:center;color:var(--ink);text-decoration:none}
 a.btn.primary{color:var(--accent-ink)}
 

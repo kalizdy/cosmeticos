@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BIM Cosmetics · Importadora</title>
 <meta name="description" content="Catálogo e inventario de BIM Cosmetics, importadora de cosméticos: cuidado facial, maquillaje, perfumes y cabello.">
-<link rel="stylesheet" href="css/styles.css?v=cosmetics14">
-<link rel="stylesheet" href="css/mejoras.css?v=cosmetics14">
+<link rel="stylesheet" href="css/styles.css?v=cosmetics15">
+<link rel="stylesheet" href="css/mejoras.css?v=cosmetics15">
 <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#071426">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="BIM Cosmetics">
 <link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
 </head>
 <body class="inventario-pwa">
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
 <header class="lobby-top">
   <button class="icon-btn burger" id="burger" aria-label="Abrir menú" aria-controls="side" aria-expanded="false"><span></span><span></span><span></span></button>
-  <a class="brand" href="#inicio" data-view="inicio" aria-label="BIM Cosmetics, ir al inicio"><span class="logo" id="logo">B</span><span class="brand-text"><span id="brandName">BIM Cosmetics</span><small>Importadora de cosméticos</small></span><span class="level">PREMIUM</span></a>
+  <a class="brand" href="#inicio" data-view="inicio"><span class="logo" id="logo">B</span><span class="brand-text"><span id="brandName">BIM Cosmetics</span><small>Importadora de cosméticos</small></span><span class="level">PREMIUM</span></a>
   <div class="spacer"></div>
   <div class="top-stats" aria-label="Resumen del catálogo">
     <span class="currency"><span aria-hidden="true">🛍</span><b id="topProducts">0</b><em>productos</em></span>
@@ -36,7 +37,7 @@
     <a href="#contacto" data-view="contacto"><span class="nav-ico" aria-hidden="true">✉</span><span>Contacto</span></a>
     <button type="button" id="catToggle" aria-expanded="false" aria-controls="catList">Categorías ▾</button><div id="catList" style="display:none"></div>
   </nav>
-  <main>
+  <main id="contenido" tabindex="-1">
     <section class="view" id="v-inicio">
       <div class="hero">
         <div class="hero-copy">
@@ -263,8 +264,8 @@
   </div>
 </div>
 <script src="vendor/jquery-3.7.1.min.js"></script><script src="js/config.js?v=bim2"></script>
-<script src="js/app.js?v=cosmetics14"></script>
+<script src="js/app.js?v=cosmetics15"></script>
 <script src="js/nube.js?v=bim4"></script>
-<script src="sync-config.js?v=bim1"></script><script src="js/cola-offline.js?v=bim1"></script><script src="pwa.js?v=cosmetics14"></script>
+<script src="sync-config.js?v=bim1"></script><script src="js/cola-offline.js?v=bim1"></script><script src="pwa.js?v=cosmetics15"></script>
 </body>
 </html>

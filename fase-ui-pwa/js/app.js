@@ -77,6 +77,7 @@ $('#burger').off('click.inv').on('click.inv',()=>menu(!$('body').hasClass('nav-o
 function show(v){if(!['inicio','inventario','movimientos','bitacora','contacto','responsable'].includes(v))v='inicio';view=v;$('.view').removeClass('active').attr('hidden','hidden');$('#v-'+v).addClass('active').removeAttr('hidden');$('[data-view]').removeClass('active').removeAttr('aria-current').filter('[data-view="'+v+'"]').addClass('active').attr('aria-current','page');menu(false);window.scrollTo(0,0);auto();schedule();}
 $(document).off('click.inv','a[data-view]').on('click.inv','a[data-view]',function(e){e.preventDefault();const v=this.dataset.view;history.replaceState(null,'','#'+v);show(v);});
 $(window).off('hashchange.inv').on('hashchange.inv',()=>show(location.hash.slice(1)));
+$('.skip-link').off('click.inv').on('click.inv',function(e){e.preventDefault();const main=document.getElementById('contenido');if(main)main.focus();});
 function chooseHome(id){home=id;$('.home-panel').prop('hidden',true).removeClass('active');$('#home-'+id).prop('hidden',false).addClass('active');$('[data-home]').attr({'aria-selected':'false',tabindex:-1}).filter('[data-home="'+id+'"]').attr({'aria-selected':'true',tabindex:0});auto();schedule();}
 $('[data-home]').off('click.inv').on('click.inv',function(){chooseHome(this.dataset.home);});
 function chooseContact(id){contact=id;$('.contact-panel').prop('hidden',true);$('#contact-'+id).prop('hidden',false);$('[data-contact]').attr({'aria-selected':'false',tabindex:-1}).filter('[data-contact="'+id+'"]').attr({'aria-selected':'true',tabindex:0});if(id==='form')open('#mContact');}
@@ -96,7 +97,7 @@ function card(p){
  body.append($('<button>').attr({type:'button','data-detail':p.id,title:p.name}).addClass('product-title').append(text('h3',p.name)),text('div',p.sku+' · '+p.cat,'meta product-meta'),text('div',money(p.price),'price'));
  const bar=$('<div>').addClass('bar '+s).attr({'aria-label':'Existencias respecto al mínimo'}).append($('<i>').css('width',Math.min(100,Math.round(p.stock/Math.max(p.min*3,1)*100))+'%'));
  body.append(bar,text('div',p.stock+' unidades (mínimo '+p.min+')','meta stock-meta'));
- const actions=$('<div>').addClass('actions');[['cart','Pedir'],['move','Stock'],['edit','Editar'],['del','Borrar']].forEach(([action,label])=>{const button=$('<button>').attr({type:'button','data-act':action,'data-id':p.id,'aria-label':(action==='del'?'Eliminar ':action==='cart'?'Añadir al pedido: ':label+' de ')+p.name}).addClass('btn sm '+(action==='del'?'danger':action==='cart'?'primary':'')).text(action==='cart'&&p.stock<=0?'Agotado':label);if(action==='cart'&&p.stock<=0)button.prop('disabled',true);actions.append(button);});
+ const actions=$('<div>').addClass('actions');[['cart','Pedir'],['move','Stock'],['edit','Editar'],['del','Borrar']].forEach(([action,label])=>{const button=$('<button>').attr({type:'button','data-act':action,'data-id':p.id,'aria-label':(action==='del'?'Borrar ':action==='cart'?(p.stock<=0?'Agotado: ':'Pedir '):label+' de ')+p.name}).addClass('btn sm '+(action==='del'?'danger':action==='cart'?'primary':'')).text(action==='cart'&&p.stock<=0?'Agotado':label);if(action==='cart'&&p.stock<=0)button.prop('disabled',true);actions.append(button);});
  body.append(actions);article.append(thumb,body);return article;
 }
 function renderStats(){

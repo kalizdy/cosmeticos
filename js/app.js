@@ -101,15 +101,15 @@ function card(p){
  body.append(actions);article.append(thumb,body);return article;
 }
 function renderStats(){
- let units=0,val=0,low=0;products.forEach(p=>{units+=p.stock;val+=p.stock*p.price;if(status(p)!=='ok')low++;});
- $('#stats').empty();[['Productos',products.length],['Unidades',units],['Valor total',money(val)],['Atención',low],['Pedidos',orders.length]].forEach(([label,value])=>$('#stats').append($('<div>').addClass('stat').append(text('small',label),text('b',value))));
+ let units=0,low=0;products.forEach(p=>{units+=p.stock;if(status(p)!=='ok')low++;});
+ $('#stats').empty();[['Productos',products.length],['Unidades',units],['Atención',low],['Pedidos',orders.length]].forEach(([label,value])=>$('#stats').append($('<div>').addClass('stat').append(text('small',label),text('b',value))));
  const cu=new Map();products.forEach(p=>cu.set(p.cat,(cu.get(p.cat)||0)+p.stock));const max=Math.max(1,...cu.values());$('#catChart').empty();cu.forEach((qty,name)=>$('#catChart').append($('<div>').addClass('brow').append(text('span',name).attr('title',name),$('<div>').addClass('bar').append($('<i>').css({width:Math.round(qty/max*100)+'%',background:'var(--accent)'})),text('b',qty))));
  if(!cu.size)$('#catChart').append(text('p','Sin datos todavía.','meta'));
- $('#lowTitle').text(low?low+' producto(s) necesitan reposición':'Todo el stock está en orden');$('#lowText').text(low?'Revisa el inventario y filtra por estado para ver cuáles son.':'No hay productos agotados ni por debajo del mínimo.');$('#valText').text('Tienes '+units+' unidades valoradas en '+money(val)+'.');
+ $('#lowTitle').text(low?low+' producto(s) necesitan reposición':'Todo el stock está en orden');$('#lowText').text(low?'Revisa el inventario y filtra por estado para ver cuáles son.':'No hay productos agotados ni por debajo del mínimo.');$('#valText').text('Tienes '+units+' unidades en el catálogo.');
  const alert=$('#alertBar').empty();if(low&&!renderStats.off){alert.append(text('span','⚠ '+low+' producto(s) con stock bajo o agotado.'),$('<button>').attr({type:'button',id:'alertGo'}).addClass('btn sm').text('Ver ahora'),$('<button>').attr({type:'button',id:'alertX','aria-label':'Cerrar aviso'}).addClass('btn sm').text('✕')).show();}else alert.hide();
  $('#recent').empty();products.slice(-4).reverse().forEach(p=>$('#recent').append(card(p)));if(!products.length)$('#recent').append(text('p','Aún no hay productos.','empty'));
  $('#responsibleStats').empty();[['Agotados',products.filter(p=>status(p)==='out').length],['Stock bajo',products.filter(p=>status(p)==='low').length]].forEach(([label,qty])=>$('#responsibleStats').append($('<div>').addClass('stat').append(text('small',label),text('b',qty))));
- $('#topProducts').text(products.length);$('#topLow').text(low);$('#topValue').text(money(val));
+ $('#topProducts').text(products.length);$('#topLow').text(low);
 }
 function renderFilters(){const selected=$('#fcat').val()||'';$('#fcat').empty().append($('<option>').val('').text('Todas'));$('#cats').empty();cats().forEach(c=>{$('#fcat').append($('<option>').val(c).text(c));$('#cats').append($('<option>').val(c));});$('#fcat').val(cats().includes(selected)?selected:'');}
 function renderChips(){const selected=$('#fcat').val()||'';$('#chips,#catList').empty();[['','Todas'],...cats().map(c=>[c,c])].forEach(([value,label])=>{const b=$('<button>').attr({type:'button','data-cat':value,'aria-pressed':String(value===selected)}).addClass('chip').toggleClass('on',value===selected).text(label);$('#chips').append(b);if(value)$('#catList').append($('<button>').attr({type:'button','data-cat':value}).addClass('catlink').text(label));});}

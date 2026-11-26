@@ -96,6 +96,7 @@
       const w=iframe.contentWindow,d=w.document;
       for(let i=0;i<40&&d.documentElement.dataset.hidratado!=='true';i++)await new Promise(r=>setTimeout(r,100));
       if(d.documentElement.dataset.hidratado!=='true')throw new Error('La app no terminó de hidratarse');
+      for(let i=0;i<60&&!d.querySelector('#grid .card');i++)await new Promise(r=>setTimeout(r,100));
       return await accion(w,d);
     }finally{iframe.remove();}
   }

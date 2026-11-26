@@ -4,7 +4,7 @@ $(function(){
 if(window.__inventarioInicializado)return;window.__inventarioInicializado=true;
 const CONFIG=window.INVENTARIO_CONFIG;
 const COLORS=['#b0195b','#7e22ce','#be185d','#a16207','#2563eb','#475569'];
-const KEY='inv_data_v1',LOGKEY='inv_bitacora_v1',CARTKEY='bim_carrito_v1',PEDKEY='bim_pedidos_v1',DEMO_VERSION='lumiere-catalogo-2',MAX=10000;
+const KEY='inv_data_v1',LOGKEY='inv_bitacora_v1',CARTKEY='bim_carrito_v1',PEDKEY='bim_pedidos_v1',MAX=10000;
 let products=[],moves=[],events=[],cart=[],orders=[],editId=null,color=COLORS[0],image='',imageVersion=0,imageBusy=false;
 let view='inicio',home='destacados',contact='datos',cur=0,timer,paused=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let previewTimer,previewDeadline=0,pendingMove=null,returnFocus=null,toastTimer,frame;
@@ -17,31 +17,14 @@ const text=(tag,value,cls)=>$('<'+tag+'>').addClass(cls||'').text(value==null?''
 const safeNumber=(n,min=0)=>Number.isFinite(Number(n))&&Number(n)>=min&&Number(n)<=1e12;
 function safeImage(value){if(typeof value!=='string'||value.length>520000)return '';if(/^img\/[a-z0-9-]+\.(?:jpg|jpeg|png|webp)$/.test(value))return value;return /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value)?value:'';}
 function safeProduct(p){return p&&Number.isSafeInteger(p.id)&&p.id>0&&typeof p.name==='string'&&typeof p.sku==='string'&&typeof p.cat==='string'&&safeNumber(p.price,.01)&&Number.isSafeInteger(p.stock)&&p.stock>=0&&Number.isSafeInteger(p.min)&&p.min>=0;}
-function demoProducts(){return [
- {id:1,name:'Crema Corporal Nécessaire 200 ml',sku:'LUM-COR-001',cat:'Cuidado corporal',price:210,stock:18,min:6,desc:'Hidratación ligera con niacinamida para una piel suave y nutrida.',emoji:'🧴',color:COLORS[0],image:'img/serum.jpg'},
- {id:2,name:'Labial Rojo Clinique',sku:'LUM-MAQ-002',cat:'Maquillaje',price:145,stock:4,min:10,desc:'Labial cremoso de alta pigmentación con acabado satinado.',emoji:'💄',color:COLORS[2],image:'img/labial.jpg'},
- {id:3,name:'Perfume N°5 Eau de Parfum 100 ml',sku:'LUM-PER-003',cat:'Perfumes',price:690,stock:8,min:3,desc:'Fragancia floral atemporal con jazmín, rosa y sándalo.',emoji:'🌸',color:COLORS[3],image:'img/perfume.jpg'},
- {id:4,name:'Mascarilla Capilar Restaurativa 150 ml',sku:'LUM-CAB-004',cat:'Cabello',price:175,stock:0,min:12,desc:'Tratamiento intensivo con keratina para cabello procesado.',emoji:'🧴',color:COLORS[5],image:'img/shampoo.jpg'},
- {id:5,name:'Limpiador Facial Curology 80 ml',sku:'LUM-FAC-005',cat:'Cuidado facial',price:160,stock:32,min:8,desc:'Gel limpiador suave que elimina impurezas sin resecar.',emoji:'☀️',color:COLORS[4],image:'img/protector.jpg'},
- {id:6,name:'Set de Brochas y Paleta Pro',sku:'LUM-ACC-006',cat:'Accesorios',price:320,stock:14,min:5,desc:'Set profesional de brochas, paleta de sombras y accesorios.',emoji:'🖌️',color:COLORS[1],image:'img/brocha.jpg'}
-];}
 function load(){
  try{
   const raw=localStorage.getItem(KEY);
-  if(raw){const d=JSON.parse(raw);if(!Array.isArray(d.p)||!Array.isArray(d.m)||!d.p.every(safeProduct))throw new Error('Datos no válidos');
-   products=d.p.slice(0,MAX).map(p=>({...p,price:Number(p.price),desc:typeof p.desc==='string'?p.desc:'',emoji:typeof p.emoji==='string'?p.emoji:'📦',color:/^#[0-9a-f]{6}$/i.test(p.color)?p.color:COLORS[0],image:safeImage(p.image),fav:Boolean(p.fav)}));
-   moves=d.m.slice(-MAX).filter(m=>m&&typeof m.name==='string'&&['in','out'].includes(m.type)&&Number.isSafeInteger(m.qty)&&m.qty>0).map(m=>({...m,date:String(m.date||''),note:String(m.note||'')}));
-   // Migra solo catálogos de ejemplo sin tocar productos propios.
-   const demoAntiguo=products.length&&products.every(p=>/^(EJ|IN|AC)-00\d$/.test(p.sku));
-   const demoLumiere=products.length===6&&products.every(p=>/^LUM-(COR|MAQ|PER|CAB|FAC|ACC)-00\d$/.test(p.sku));
-   if(demoAntiguo||(demoLumiere&&localStorage.getItem('inv_demo_version')!==DEMO_VERSION)){
-    products=demoProducts();moves=[];
-    try{localStorage.setItem(KEY,JSON.stringify({p:products,m:moves}));localStorage.setItem('inv_demo_version',DEMO_VERSION);}catch{}
-   }
-   return;
-  }
- }catch(e){try{const original=localStorage.getItem(KEY);if(original)localStorage.setItem(KEY+'_respaldo',original);}catch{}toast('Se guardó un respaldo de los datos que no pudieron leerse.');}
- products=demoProducts();moves=[];try{localStorage.setItem('inv_demo_version',DEMO_VERSION);}catch{}
+  if(!raw){products=[];moves=[];return;}
+  const d=JSON.parse(raw);if(!Array.isArray(d.p)||!Array.isArray(d.m)||!d.p.every(safeProduct))throw new Error('Datos no válidos');
+  products=d.p.slice(0,MAX).map(p=>({...p,price:Number(p.price),desc:typeof p.desc==='string'?p.desc:'',emoji:typeof p.emoji==='string'?p.emoji:'📦',color:/^#[0-9a-f]{6}$/i.test(p.color)?p.color:COLORS[0],image:safeImage(p.image),fav:Boolean(p.fav)}));
+  moves=d.m.slice(-MAX).filter(m=>m&&typeof m.name==='string'&&['in','out'].includes(m.type)&&Number.isSafeInteger(m.qty)&&m.qty>0).map(m=>({...m,date:String(m.date||''),note:String(m.note||'')}));
+ }catch(e){try{const original=localStorage.getItem(KEY);if(original)localStorage.setItem(KEY+'_respaldo',original);}catch{}toast('Se guardó un respaldo de los datos que no pudieron leerse.');products=[];moves=[];}
 }
 function safeEvent(e){return e&&Number.isFinite(e.t)&&typeof e.type==='string'&&e.type.length<=20&&typeof e.message==='string';}
 function loadLog(){try{const raw=JSON.parse(localStorage.getItem(LOGKEY)||'[]');events=(Array.isArray(raw)?raw:[]).filter(safeEvent).slice(-300);}catch{events=[];}}
@@ -132,7 +115,7 @@ function renderChips(){const selected=$('#fcat').val()||'';$('#chips,#catList').
 function renderGrid(){
  const max=Math.max(1,...products.map(p=>p.price)),range=Number($('#fprice').val()),lim=max*range/100,q=String($('#fq').val()||'').toLocaleLowerCase().trim(),category=$('#fcat').val()||'',s=$('#fst').val(),sort=$('#fsort').val();$('#pv').text(range>=100?'todos':money(lim));renderChips();
  const result=products.filter(p=>(!q||p.name.toLocaleLowerCase().includes(q)||p.sku.toLocaleLowerCase().includes(q))&&(!category||p.cat===category)&&(!s||(s==='fav'?p.fav:status(p)===s))&&p.price<=lim+.001);
- result.sort((a,b)=>sort==='price-asc'?a.price-b.price:sort==='price-desc'?b.price-a.price:sort==='stock-asc'?a.stock-b.stock:a.name.localeCompare(b.name));$('#grid').empty();result.forEach(p=>$('#grid').append(card(p)));if(!result.length)$('#grid').append(text('p','No hay productos con esos filtros. Prueba limpiarlos o agrega uno nuevo.','empty'));$('#clearF').toggle(Boolean(q||category||s||range<100));paging.grid=0;schedule();
+ result.sort((a,b)=>sort==='price-asc'?a.price-b.price:sort==='price-desc'?b.price-a.price:sort==='stock-asc'?a.stock-b.stock:a.name.localeCompare(b.name));$('#grid').empty();result.forEach(p=>$('#grid').append(card(p)));if(!result.length)$('#grid').append(text('p',products.length?'No hay productos con esos filtros. Prueba limpiarlos o agrega uno nuevo.':'Aún no hay productos. Agrega el primero con “+ Nuevo producto” o espera la sincronización con la nube.','empty'));$('#clearF').toggle(Boolean(q||category||s||range<100));paging.grid=0;schedule();
 }
 function renderMoves(){const labels=['Fecha','Producto','Tipo','Cantidad','Nota'];$('#moves').empty();moves.slice().reverse().forEach(m=>{const tr=$('<tr>');[m.date,m.name,m.type==='in'?'Entrada':'Salida',m.qty,m.note||'-'].forEach((value,i)=>tr.append(text('td',value,i===2?m.type:'').attr({'data-label':labels[i],title:String(value)})));$('#moves').append(tr);});if(!moves.length)$('#moves').append($('<tr>').addClass('empty-moves').append(text('td','Todavía no registraste movimientos.').attr('colspan',5)));schedule();}
 function renderLog(){const type=$('#logType').val()||'',labels=['Fecha','Tipo','Evento'];const rows=events.slice().reverse().filter(e=>!type||e.type===type);$('#logBody').empty();rows.forEach(e=>{const tr=$('<tr>');[new Date(e.t).toLocaleString('es-BO',{dateStyle:'short',timeStyle:'short'}),e.type,e.message].forEach((value,i)=>tr.append(text('td',value,i===1?'log-type':'').attr('data-label',labels[i])));$('#logBody').append(tr);});if(!rows.length)$('#logBody').append($('<tr>').addClass('empty-moves').append(text('td','No hay eventos para este filtro.').attr('colspan',3)));}

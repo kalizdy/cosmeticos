@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BIM Cosmetics · Importadora</title>
+<meta name="description" content="Catálogo e inventario de BIM Cosmetics, importadora de cosméticos: cuidado facial, maquillaje, perfumes y cabello.">
+<link rel="stylesheet" href="css/styles.css?v=cosmetics10">
+<link rel="stylesheet" href="css/mejoras.css?v=cosmetics10">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#071426">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="BIM Cosmetics">
+<link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body class="inventario-pwa">
+<header class="lobby-top">
+  <button class="icon-btn burger" id="burger" aria-label="Abrir menú" aria-controls="side" aria-expanded="false"><span></span><span></span><span></span></button>
+  <a class="brand" href="#inicio" data-view="inicio" aria-label="BIM Cosmetics, ir al inicio"><span class="logo" id="logo">B</span><span class="brand-text"><span id="brandName">BIM Cosmetics</span><small>Importadora de cosméticos</small></span><span class="level">PREMIUM</span></a>
+  <div class="spacer"></div>
+  <div class="top-stats" aria-label="Resumen del catálogo">
+    <span class="currency"><span aria-hidden="true">🛍</span><b id="topProducts">0</b><em>productos</em></span>
+    <span class="currency warn"><span aria-hidden="true">⚠</span><b id="topLow">0</b><em>alertas</em></span>
+    <span class="currency gold"><b id="topValue">Bs 0</b></span>
+  </div>
+  <button class="icon-btn" id="themeBtn" aria-label="Cambiar entre modo día y noche">🌙</button>
+</header>
+<div class="scrim" id="scrim"></div>
+<div class="layout">
+  <nav class="side" id="side" aria-label="Navegación principal">
+    <a href="#inicio" data-view="inicio"><span class="nav-ico" aria-hidden="true">⌂</span><span>Inicio</span></a>
+    <a href="#inventario" data-view="inventario"><span class="nav-ico" aria-hidden="true">◈</span><span>Catálogo</span></a>
+    <a href="#movimientos" data-view="movimientos"><span class="nav-ico" aria-hidden="true">⇄</span><span>Movimientos</span></a>
+    <a href="#bitacora" data-view="bitacora"><span class="nav-ico" aria-hidden="true">▤</span><span>Bitácora</span></a>
+    <a href="#responsable" data-view="responsable"><span class="nav-ico" aria-hidden="true">✦</span><span>Nosotros</span></a>
+    <a href="#contacto" data-view="contacto"><span class="nav-ico" aria-hidden="true">✉</span><span>Contacto</span></a>
+    <button type="button" id="catToggle" aria-expanded="false" aria-controls="catList">Categorías ▾</button><div id="catList" style="display:none"></div>
+  </nav>
+  <main>
+    <section class="view" id="v-inicio">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">Importadora de cosméticos · La Paz</span>
+          <h1>Belleza importada,<br><em>lista para brillar.</em></h1>
+          <p class="hero-lead">Seleccionamos skincare, maquillaje y fragancias originales de marcas internacionales para que tu rutina se sienta tan bien como se ve.</p>
+          <div class="hero-actions"><a class="btn primary lg" href="#inventario">Explorar catálogo</a><a class="btn lg" href="#contacto">Pedir asesoría</a></div>
+          <ul class="hero-trust"><li>✓ Productos originales</li><li>✓ Importación directa</li><li>✓ Envíos en La Paz</li></ul>
+        </div>
+        <div class="hero-media">
+          <img src="img/hero-cosmetics.jpg" alt="Cosméticos importados de BIM: brochas, labiales, rubor y paleta" width="1400" height="1400" fetchpriority="high" decoding="async">
+          <div class="hero-badge"><span><small>Colección destacada</small><strong>Glow essentials</strong></span><span class="hero-badge-dot">✦</span></div>
+        </div>
+      </div>
+      <div class="section-head">
+        <div><span class="eyebrow">Novedades</span><h2>Lo más pedido</h2></div>
+        <p>Stock real de nuestra importadora, actualizado desde este dispositivo.</p>
+      </div>
+      <div class="alert" id="alertBar" style="display:none"></div>
+      <div class="subtabs" role="tablist" aria-label="Resumen del inventario">
+        <button type="button" role="tab" id="subtab-destacados" aria-controls="home-destacados" aria-selected="true" data-home="destacados">Destacados</button><button type="button" role="tab" id="subtab-indicadores" aria-controls="home-indicadores" aria-selected="false" data-home="indicadores" tabindex="-1">Indicadores</button><button type="button" role="tab" id="subtab-categorias" aria-controls="home-categorias" aria-selected="false" data-home="categorias" tabindex="-1">Categorías</button><button type="button" role="tab" id="subtab-recientes" aria-controls="home-recientes" aria-selected="false" data-home="recientes" tabindex="-1">Recientes</button>
+      </div>
+      <div class="home-content">
+        <div id="home-destacados" role="tabpanel" aria-labelledby="subtab-destacados" class="home-panel active"><div class="carousel" id="carousel">
+        <div class="track" id="track">
+          <div class="slide s1"><h2>Bienvenido a BIM Cosmetics</h2><p>Importamos belleza: controla el catálogo, las entradas y las salidas de cada cosmético.</p></div>
+          <div class="slide s2"><h2 id="lowTitle">Reposición de cosméticos</h2><p id="lowText"></p></div>
+          <div class="slide s3"><h2 id="valTitle">Valor del catálogo</h2><p id="valText"></p></div>
+        </div>
+        <button class="car-btn prev" aria-label="Anterior">‹</button>
+        <button class="car-btn next" aria-label="Siguiente">›</button>
+        <div class="dots" id="dots"></div><button class="btn pausa-carrusel" id="pauseCarousel" type="button">Pausar</button>
+      </div><p class="sub ayuda-resumen">Usa las pestañas para consultar los indicadores, las categorías y los últimos productos.</p></div>
+        <div id="home-indicadores" role="tabpanel" aria-labelledby="subtab-indicadores" class="home-panel" hidden><button class="btn sm" id="toggleStats" style="margin-bottom:10px">Ocultar resumen</button></div>
+        <div id="home-categorias" role="tabpanel" aria-labelledby="subtab-categorias" class="home-panel" hidden><div class="panel"><h2 style="margin:0 0 6px;font-size:18px">Stock por categoría</h2><div id="catChart"></div></div><div class="paginador" id="chartPager"></div></div>
+        <div id="home-recientes" role="tabpanel" aria-labelledby="subtab-recientes" class="home-panel" hidden><div class="grid" id="recent"></div><div class="paginador" id="recentPager"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-inventario">
+      <div class="section-head">
+        <div><span class="eyebrow">Catálogo</span><h2>Cosméticos disponibles</h2><p class="sub">Busca, filtra y administra los productos importados. Los precios están en bolivianos.</p></div>
+        <div class="head-actions"><button class="btn" id="toggleF" aria-controls="mFilters" aria-expanded="false">⚙ Filtros</button><button class="btn" id="exportBtn">⬇ CSV</button><button class="btn primary" id="addBtn">+ Nuevo producto</button></div>
+      </div>
+      <div class="toolbar" id="toolbar">
+        <div class="field"><label for="fq">Buscar</label><input id="fq" type="search" placeholder="Nombre o SKU"></div>
+        <div class="field"><label for="fcat">Categoría</label><select id="fcat"></select></div>
+        <div class="field"><label for="fst">Estado</label><select id="fst"><option value="">Todos</option><option value="ok">Disponible</option><option value="low">Stock bajo</option><option value="out">Agotado</option><option value="fav">⭐ Favoritos</option></select></div>
+        <div class="field"><label for="fsort">Ordenar</label><select id="fsort"><option value="name">Nombre A-Z</option><option value="price-asc">Precio menor</option><option value="price-desc">Precio mayor</option><option value="stock-asc">Menos stock</option></select></div>
+        <div class="field"><label for="fprice">Precio máximo: <span id="pv">todos</span></label><input id="fprice" type="range" min="0" max="100" value="100"></div>
+        <div class="field" style="flex:0 0 auto;align-self:end"><button class="btn" id="clearF">Limpiar</button></div>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="grid" id="grid"></div><div class="paginador" id="gridPager"></div>
+    </section>
+
+    <section class="view" id="v-movimientos">
+      <div class="section-head">
+        <div><span class="eyebrow">Control de stock</span><h2>Movimientos</h2><p class="sub">Entradas y salidas del catálogo de cosméticos.</p></div>
+        <div class="head-actions"><button class="btn danger" id="clearMoves">Vaciar historial</button><button class="btn primary" id="moveBtn">+ Registrar movimiento</button></div>
+      </div>
+      <div class="tbl"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Nota</th></tr></thead><tbody id="moves"></tbody></table></div><div class="paginador" id="movesPager"></div>
+    </section>
+
+    <section class="view" id="v-bitacora">
+      <div class="section-head">
+        <div><span class="eyebrow">Trazabilidad</span><h2>Bitácora de eventos</h2><p class="sub">Registro local de las acciones realizadas en la importadora.</p></div>
+        <div class="head-actions"><button class="btn" id="logRefresh">↻ Actualizar</button><button class="btn danger" id="clearLog">Vaciar bitácora</button></div>
+      </div>
+      <div class="toolbar" id="logToolbar">
+        <div class="field"><label for="logType">Filtrar por tipo</label><select id="logType"><option value="">Todos</option><option value="Sistema">Sistema</option><option value="Producto">Producto</option><option value="Movimiento">Movimiento</option><option value="Favorito">Favorito</option><option value="Contacto">Contacto</option><option value="Interfaz">Interfaz</option><option value="Exportación">Exportación</option></select></div>
+        <div class="field" style="flex:2 1 260px"><label>Hidratación y persistencia</label><p class="meta" style="margin:0">Los eventos se guardan en localStorage y se muestran con jQuery creando nodos seguros (sin innerHTML).</p></div>
+      </div>
+      <div class="tbl"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Evento</th></tr></thead><tbody id="logBody"></tbody></table></div>
+    </section>
+
+  <section class="view" id="v-contacto">
+      <div class="section-head">
+        <div><span class="eyebrow">Hablemos</span><h2>Contacto</h2><p class="sub">Asesoría de compra, disponibilidad y pedidos de importación.</p></div>
+      </div>
+      <div class="contact-shell">
+        <div class="contact-aside">
+          <img src="img/contacto.jpg" alt="Productos de maquillaje importados por BIM Cosmetics" width="1100" height="733" loading="lazy" decoding="async">
+          <div class="contact-aside-copy">
+            <h3>Asesoría personalizada</h3>
+            <p>Te ayudamos a elegir productos según tu tipo de piel, rutina y presupuesto.</p>
+            <ul class="contact-perks"><li>✓ Respuesta por WhatsApp</li><li>✓ Envíos en La Paz</li><li>✓ Productos originales</li></ul>
+          </div>
+        </div>
+        <div class="contact-main">
+          <div class="subtabs" role="tablist" aria-label="Opciones de contacto"><button type="button" role="tab" id="ctab-datos" aria-controls="contact-datos" aria-selected="true" data-contact="datos">Empresa</button><button type="button" role="tab" id="ctab-faq" aria-controls="contact-faq" aria-selected="false" data-contact="faq" tabindex="-1">Preguntas</button><button type="button" role="tab" id="ctab-form" aria-controls="contact-form" aria-selected="false" data-contact="form" tabindex="-1">Escribir</button></div>
+          <div class="two contact-content">
+            <div id="contact-datos" class="contact-panel">
+              <div class="panel"><button class="btn sm" id="toggleCo" type="button">Datos de la empresa ▾</button><ul class="company" id="coBox"></ul></div>
+              <div class="panel"><button class="btn sm" id="toggleSoc" type="button">Redes sociales ▾</button><div class="socials" id="socBox"></div></div>
+            </div>
+            <div id="contact-faq" class="contact-panel" hidden><div class="panel faq"><h2 style="margin:0 0 6px;font-size:18px">Preguntas frecuentes</h2>
+              <button class="q" type="button">¿Cómo registro una entrada o salida?</button><div class="a" style="display:none">En Movimientos pulsa Registrar movimiento, elige el cosmético, el tipo y la cantidad.</div>
+              <button class="q" type="button">¿Cuándo aparece la alerta de stock bajo?</button><div class="a" style="display:none">Cuando las unidades llegan al stock mínimo definido para ese producto, por ejemplo un labial o una crema.</div>
+              <button class="q" type="button">¿Dónde se guardan mis datos?</button><div class="a" style="display:none">En tu propio navegador, así que no se pierden al recargar la página y el catálogo funciona sin conexión.</div></div></div>
+            <div id="contact-form" class="contact-panel" hidden><div class="panel"><h3>Escríbenos</h3><p>Guarda una consulta sobre productos, precios de importación o pedidos. También puedes escribirnos por WhatsApp o redes sociales.</p><button type="button" class="btn primary" id="openContact">Abrir formulario</button></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="view" id="v-responsable">
+      <div class="section-head">
+        <div><span class="eyebrow">Nosotros</span><h2>Importamos con propósito</h2><p class="sub">Selección consciente, stock planificado y ODS 12.</p></div>
+      </div>
+      <div class="about-grid">
+        <div class="about-media"><img src="img/nosotros.jpg" alt="Mujer con cabello ondulado iluminado por luz natural" width="1100" height="733" loading="lazy" decoding="async"></div>
+        <div class="panel responsable-panel">
+          <h3>Planifica la reposición de cosméticos</h3>
+          <p>Las alertas, la bitácora y el historial de movimientos ayudan a prever pedidos, evitar compras innecesarias y mantener disponible lo que más se vende.</p>
+          <div id="responsibleStats" class="stats"></div>
+          <div class="about-points">
+            <div><b>01</b><span>Selección de marcas internacionales</span></div>
+            <div><b>02</b><span>Control local de stock y trazabilidad</span></div>
+            <div><b>03</b><span>Reposición basada en datos reales</span></div>
+          </div>
+          <p class="meta">Estos datos describen el inventario local. No equivalen a una medición de residuos o impacto ambiental.</p>
+          <button type="button" class="btn primary" id="responsibleGo">Revisar catálogo</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <aside class="lobby-aside" aria-label="Panel de BIM Cosmetics">
+    <div class="aside-card assistant">
+      <div class="aside-avatar">B</div>
+      <div class="aside-id"><strong>BIM Cosmetics</strong><small>Importadora · La Paz</small></div>
+      <span class="online-dot" title="En línea">●</span>
+    </div>
+    <div class="aside-card">
+      <div class="aside-head"><h3>Resumen</h3><span class="pill">Hoy</span></div>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="aside-card">
+      <div class="aside-head"><h3>Destacados</h3><a href="#inventario" data-view="inventario">Ver todo</a></div>
+      <a class="mini-product" href="#inventario" data-view="inventario"><img src="img/perfume.jpg" alt="" width="900" height="1350" loading="lazy"><span><strong>Perfume N°5</strong><small>Bs 690</small></span></a>
+      <a class="mini-product" href="#inventario" data-view="inventario"><img src="img/labial.jpg" alt="" width="900" height="1260" loading="lazy"><span><strong>Labial Clinique</strong><small>Bs 145</small></span></a>
+      <a class="mini-product" href="#inventario" data-view="inventario"><img src="img/brocha.jpg" alt="" width="900" height="675" loading="lazy"><span><strong>Set Pro</strong><small>Bs 320</small></span></a>
+    </div>
+    <div class="aside-card aside-help">
+      <strong>¿Necesitas asesoría?</strong>
+      <p>Te ayudamos a elegir tu rutina ideal.</p>
+      <a class="btn primary" href="#contacto" data-view="contacto">Hablar con BIM</a>
+    </div>
+  </aside>
+</div>
+
+<footer class="lobby-bar">
+  <div class="bar-brand"><span class="bar-logo">B</span><div><strong>BIM Cosmetics</strong><small id="fInfo"></small></div></div>
+  <nav class="bar-nav" aria-label="Accesos rápidos">
+    <a href="#inicio" data-view="inicio"><span aria-hidden="true">⌂</span>Inicio</a>
+    <a href="#inventario" data-view="inventario"><span aria-hidden="true">◈</span>Catálogo</a>
+    <a href="#movimientos" data-view="movimientos"><span aria-hidden="true">⇄</span>Movimientos</a>
+    <a href="#bitacora" data-view="bitacora"><span aria-hidden="true">▤</span>Bitácora</a>
+    <a href="#responsable" data-view="responsable"><span aria-hidden="true">✦</span>Nosotros</a>
+    <a href="#contacto" data-view="contacto"><span aria-hidden="true">✉</span>Contacto</a>
+  </nav>
+  <a class="cta-gold" href="#inventario" data-view="inventario">Ver catálogo <span aria-hidden="true">›</span></a>
+</footer>
+
+<div class="modal" id="mProd" role="dialog" aria-modal="true" aria-labelledby="mProdTitle" hidden><form class="dialog" id="fProd" novalidate>
+  <h2 id="mProdTitle">Nuevo producto</h2>
+  <div class="fgroup"><label for="pname">Nombre</label><input id="pname" required minlength="3" maxlength="40"><div class="err"></div></div>
+  <div class="row">
+    <div class="fgroup"><label for="psku">SKU</label><input id="psku" required placeholder="ABC-001"><div class="err"></div></div>
+    <div class="fgroup"><label for="pcat">Categoría</label><input id="pcat" required list="cats" maxlength="25"><datalist id="cats"></datalist><div class="err"></div></div>
+  </div>
+  <div class="row">
+    <div class="fgroup"><label for="pprice">Precio</label><input id="pprice" type="number" step="0.01" min="0.01" required><div class="err"></div></div>
+    <div class="fgroup"><label for="pstock">Stock actual</label><input id="pstock" type="number" step="1" min="0" required><div class="err"></div></div>
+  </div>
+  <div class="fgroup"><label for="pmin">Stock mínimo (alerta)</label><input id="pmin" type="number" step="1" min="0" required><div class="err"></div></div>
+  <div class="fgroup"><label for="pdesc">Descripción (opcional)</label><textarea id="pdesc" rows="2" maxlength="120"></textarea></div>
+  <div class="fgroup"><label for="pimage">Foto del producto (opcional)</label><input id="pimage" type="file" accept="image/png,image/jpeg,image/webp"><div class="meta">PNG, JPG o WEBP, hasta 350 KB.</div><div class="err" id="pimageError"></div><div class="photo-preview"><img id="pimagePreview" alt="Vista previa de la foto" hidden><button type="button" class="btn sm" id="removeImage">Quitar foto</button></div></div>
+  <div class="fgroup"><label>Ícono y color</label>
+    <div class="row"><input id="pemoji" maxlength="12" value="📦" aria-label="Ícono"><div class="swatches" id="swatches"></div></div></div>
+  <div class="foot"><button type="button" class="btn" data-close>Cancelar</button><button class="btn primary">Guardar producto</button></div>
+</form></div>
+
+<div class="modal" id="mMove" role="dialog" aria-modal="true" aria-labelledby="moveTitle" hidden><form class="dialog" id="fMove" novalidate>
+  <h2 id="moveTitle">Registrar movimiento</h2>
+  <div class="fgroup"><label for="mprod">Producto</label><select id="mprod" required></select><div class="err"></div></div>
+  <div class="row">
+    <div class="fgroup"><label for="mtype">Tipo</label><select id="mtype"><option value="in">Entrada</option><option value="out">Salida</option></select></div>
+    <div class="fgroup"><label for="mqty">Cantidad</label><input id="mqty" type="number" step="1" min="1" required><div class="err"></div></div>
+  </div>
+  <div class="fgroup"><label for="mnote">Nota (opcional)</label><input id="mnote" maxlength="60" placeholder="Compra, venta, ajuste..."></div>
+  <div class="panel move-summary" id="moveSummary" aria-live="polite"></div><div class="foot"><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn" id="previewMove">Revisar movimiento</button><button class="btn primary">Registrar</button></div>
+</form></div>
+<button class="icon-btn" id="toTop" style="display:none" aria-label="Volver arriba">↑</button>
+<div id="toast" role="status"></div>
+
+<div class="modal" id="mFilters" role="dialog" aria-modal="true" aria-labelledby="filtersTitle" hidden><div class="dialog"><div class="modal-heading"><h2 id="filtersTitle">Filtros del inventario</h2><button type="button" class="icon-btn" data-close aria-label="Cerrar filtros">✕</button></div><div id="filtersContent"></div><button type="button" class="btn primary" data-close>Ver resultados</button></div></div>
+<div class="modal" id="mDetails" role="dialog" aria-modal="true" aria-labelledby="detailsTitle" hidden><div class="dialog"><div class="modal-heading"><h2 id="detailsTitle">Detalle del producto</h2><button type="button" class="icon-btn" data-close aria-label="Cerrar detalle">✕</button></div><div id="detailsContent"></div></div></div>
+<div class="modal" id="mPhoto" role="dialog" aria-modal="true" aria-labelledby="photoTitle" hidden><div class="dialog photo-dialog"><div class="modal-heading"><h2 id="photoTitle">Vista ampliada</h2><button type="button" class="icon-btn" data-close aria-label="Cerrar foto">✕</button></div><div id="photoContent"></div></div></div>
+<div class="modal" id="mPreview" role="dialog" aria-modal="true" aria-labelledby="previewTitle" hidden><div class="dialog"><h2 id="previewTitle">Confirmar movimiento</h2><div id="previewContent"></div><p>Tiempo para confirmar: <strong id="previewTimer" role="timer">00:30</strong></p><div class="foot"><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="confirmPreview">Confirmar registro</button></div></div></div>
+<div class="modal" id="mContact" role="dialog" aria-modal="true" aria-labelledby="contactTitle" hidden><form class="dialog" id="fCont" novalidate>
+          <div class="modal-heading"><h2 id="contactTitle">Escríbenos</h2><button type="button" class="icon-btn" data-close aria-label="Cerrar formulario">✕</button></div>
+          <div class="fgroup"><label for="cname">Nombre completo</label><input id="cname" required maxlength="40"><div class="err"></div></div>
+          <div class="row">
+            <div class="fgroup"><label for="cmail">Correo</label><input id="cmail" type="email" required><div class="err"></div></div>
+            <div class="fgroup"><label for="cphone">Teléfono</label><input id="cphone" type="tel" required><div class="err"></div></div>
+          </div>
+          <div class="fgroup"><label for="cmsg">Mensaje</label><textarea id="cmsg" rows="4" required maxlength="300"></textarea><div class="cnt" id="cnt">0/300</div><div class="err"></div></div>
+          <div class="ok" id="okMsg" style="display:none">Consulta guardada en este dispositivo. No se ha enviado a un servidor.</div>
+          <div class="foot"><button class="btn primary">Guardar consulta</button></div>
+        </form></div>
+<script src="vendor/jquery-3.7.1.min.js"></script><script src="js/config.js?v=bim1"></script>
+<script src="js/app.js?v=cosmetics10"></script>
+<script src="sync-config.js?v=bim1"></script><script src="js/cola-offline.js?v=bim1"></script><script src="pwa.js?v=cosmetics10"></script>
+</body>
+</html>

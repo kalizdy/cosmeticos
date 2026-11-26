@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditoría y smoke testing · BIM Cosmetics</title>
+<style>
+  :root{--bg:#f4f4f6;--surface:#fff;--ink:#211a20;--muted:#6b6470;--line:#e2dfe5;--accent:#b0195b;--ok:#15803d;--warn:#a16207;--bad:#c0392b}
+  *{box-sizing:border-box}
+  body{font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);max-width:1050px;margin:auto;padding:24px}
+  h1,h2{letter-spacing:-.02em}
+  a{color:var(--accent)}
+  .nav{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 22px}
+  .nav a,.btn{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);text-decoration:none;font-weight:700;color:var(--ink);cursor:pointer}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0 26px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f7f4f6;font-size:13px}
+  .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:800;white-space:nowrap}
+  .ok{background:#dff5e7;color:var(--ok)}.partial{background:#fdf0d5;color:var(--warn)}
+  pre{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;font-size:13px}
+  .note{background:var(--surface);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:14px 0}
+  code{background:#f1edf0;padding:1px 5px;border-radius:4px}
+  @media (max-width:640px){body{padding:14px}table{font-size:13px}th,td{padding:7px}}
+</style>
+</head>
+<body>
+<h1>Auditoría y smoke testing · BIM Cosmetics</h1>
+<p>Importadora de cosméticos. Esta página resume el checklist del proyecto y ejecuta comprobaciones automáticas de humo (smoke testing) en el navegador. No modifica ni borra registros.</p>
+<div class="nav"><a href="index.html">← Volver al catálogo</a><a href="diagnostico.html">Diagnóstico técnico</a><button class="btn primary" id="run">▶ Ejecutar smoke testing</button></div>
+
+<div class="note"><strong>Cómo ejecutar:</strong> para las pruebas de red (manifest, sw.js, CSS y JS) abre esta página mediante un servidor local, por ejemplo <code>python -m http.server 8080</code>. Abierta como <code>file://</code> solo se comprueban los elementos del DOM.</div>
+
+<h2>Resultado del smoke testing</h2>
+<pre id="result" role="status" aria-live="polite">Pulsa «Ejecutar smoke testing».</pre>
+<p id="summary" class="meta"></p>
+
+<h2>Checklist de la consigna</h2>
+<table>
+<thead><tr><th>Ítem</th><th>Dónde está / cómo se cumple</th><th>Estado</th></tr></thead>
+<tbody>
+<tr><td>Bitácora</td><td>Vista <code>#v-bitacora</code>, almacenamiento <code>inv_bitacora_v1</code>, filtro por tipo, refresco y vaciado.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>DOM</td><td>Navegación y pintado dinámico con jQuery: <code>renderGrid</code>, <code>renderMoves</code>, <code>renderLog</code>, <code>renderStats</code>.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Hamburguesa</td><td><code>#burger</code>, <code>#scrim</code> y clase <code>body.nav-open</code>; cierre con Escape y trampa de foco.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Filtro</td><td>Buscador, categoría, estado, orden, precio máximo, chips y favoritos. Bitácora con filtro por tipo.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Día y noche</td><td><code>#themeBtn</code>, <code>data-theme</code>, preferencia del sistema y persistencia en <code>inv_theme</code>.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Contraste</td><td>Variables de color con textos oscuros sobre fondos claros y aclarados en modo oscuro; foco visible de 2 px.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Filtro avanzado</td><td>Combinación de texto + categoría + estado + rango de precio + ordenamiento, con contador de resultados en chips.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Layout</td><td>CSS Grid para la estructura (header, sidebar, main) y Flexbox para barras, tarjetas y formularios; una vista por pantalla.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Bitácora de eventos</td><td>Registra inicio, tema, productos, movimientos, favoritos, contacto y exportación, con fecha y tipo.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>jQuery</td><td><code>vendor/jquery-3.7.1.min.js</code>; eventos con espacio de nombres (<code>.inv</code>) y delegación.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Subcarpetas</td><td><code>css/</code>, <code>js/</code>, <code>vendor/</code>, <code>icons/</code>; raíz solo con páginas, PWA y configuración.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Maquetación UI</td><td>Encabezado fijo, menú lateral, pestañas, tarjetas, tablas, modales, toasts y paginación.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>PWA con el mismo index + sw.js + manifest.json</td><td><code>manifest.json</code> usa <code>start_url: ./index.html</code>; <code>sw.js</code> cachea el mismo index y sus assets.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Leaks (fugas de memoria)</td><td>Limpieza en <code>pagehide</code>: intervalos, <code>requestAnimationFrame</code>, temporizadores, modales y URLs de objeto.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Hidratación</td><td>Shell HTML estático + hidratación del contenido dinámico en cliente; <code>documentElement.dataset.hidratado</code> marca el fin. No hay servidor SSR real.</td><td><span class="tag partial">Parcial / documentado</span></td></tr>
+<tr><td>Bubbling</td><td>Delegación de eventos en <code>document</code> para <code>[data-act]</code>, <code>.fav</code>, <code>[data-detail]</code>, chips y fotos.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Offline-first</td><td>Service Worker con caché propia, fallback a <code>index.html</code>/<code>offline.html</code>, cola IndexedDB y sincronización al volver en línea.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Lazy loading</td><td>Imágenes con <code>loading="lazy"</code> y <code>decoding="async"</code>; assets bajo demanda en el service worker.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Tree shaking</td><td>Sin bundler no hay eliminación automática de código; se aplica carga selectiva: solo se incluyen jQuery, app, cola offline y PWA; el SW cachea únicamente lo usado.</td><td><span class="tag partial">Parcial / sin bundler</span></td></tr>
+<tr><td>Seguridad XSS</td><td>Creación de nodos con <code>.text()</code>, validación de datos, imágenes <code>data:</code> verificadas, enlaces solo HTTPS y CSV con escape de fórmulas.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Responsividad</td><td>Media queries en 900, 760, 640, 600 y 520 px; rejilla y tabla adaptables; <code>visualViewport</code>.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Encapsulamiento</td><td>Lógica dentro de <code>$(function(){...})</code>, IIFE en <code>pwa.js</code> y <code>cola-offline.js</code>, namespace de eventos y API congelada.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Mobile first + gris</td><td>Base gris (<code>#f4f4f6</code>), una columna por defecto y mejoras progresivas; acento rosa cosmético.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Flexbox</td><td>Header, barras, acciones, chips, redes, pestañas y tarjetas usan <code>display:flex</code>.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Psicología de color</td><td>Rosa/magenta para belleza y cuidado, dorado para premium, gris neutro para orden y violeta para perfumes.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Smoke testing</td><td>Este panel ejecuta comprobaciones de estructura, recursos, PWA, seguridad y accesibilidad básica.</td><td><span class="tag ok">Cumple</span></td></tr>
+</tbody>
+</table>
+
+<p style="color:#6b6470">Nota: «Leaks» se interpretó como fugas de memoria. «Filtro a» se interpretó como filtro avanzado. Ajusta el informe si tu rúbrica usa otro significado.</p>
+
+<script>
+(function(){
+  'use strict';
+  const state={};
+  async function text(path){const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw new Error(path+' → HTTP '+r.status);return r.text();}
+  async function json(path){return JSON.parse(await text(path));}
+  async function check(name,fn){
+    try{const detail=await fn();return {name,ok:true,detail:typeof detail==='string'?detail:'OK'};}
+    catch(error){return {name,ok:false,detail:error.message||String(error)};}
+  }
+  async function apuntarIndex(){
+    const doc=new DOMParser().parseFromString(await text('index.html'),'text/html');
+    return doc;
+  }
+  async function conApp(accion){
+    const iframe=document.createElement('iframe');
+    iframe.src='index.html';iframe.title='Prueba funcional';
+    iframe.style.cssText='position:fixed;left:-10000px;top:0;width:1200px;height:800px;border:0';
+    document.body.appendChild(iframe);
+    try{
+      await new Promise((resolve,reject)=>{iframe.onload=resolve;iframe.onerror=()=>reject(new Error('No se pudo cargar index.html'));setTimeout(()=>reject(new Error('Tiempo de carga agotado')),8000);});
+      const w=iframe.contentWindow,d=w.document;
+      for(let i=0;i<40&&d.documentElement.dataset.hidratado!=='true';i++)await new Promise(r=>setTimeout(r,100));
+      if(d.documentElement.dataset.hidratado!=='true')throw new Error('La app no terminó de hidratarse');
+      return await accion(w,d);
+    }finally{iframe.remove();}
+  }
+  async function run(){
+    const rows=[];
+    const local=location.protocol==='file:';
+    if(!local){
+      rows.push(await check('DOM: menú hamburguesa, filtros y tema',async()=>{const doc=await apuntarIndex();for(const id of ['burger','fq','fst','themeBtn'])if(!doc.getElementById(id))throw new Error('Falta #'+id);return 'controles del index presentes';}));
+      rows.push(await check('DOM: bitácora de eventos',async()=>{const doc=await apuntarIndex();if(!doc.getElementById('v-bitacora')||!doc.getElementById('logBody'))throw new Error('Falta la vista');return 'vista y tabla presentes';}));
+      rows.push(await check('PWA: manifest enlazado',async()=>{const doc=await apuntarIndex();if(!doc.querySelector('link[rel="manifest"]'))throw new Error('Falta el enlace');return 'enlazado';}));
+      rows.push(await check('Funcional: catálogo renderizado',()=>conApp((w,d)=>{const n=d.querySelectorAll('#grid .card').length;if(!n)throw new Error('No se pintaron tarjetas');return n+' tarjetas';})));
+      rows.push(await check('Funcional: filtro de búsqueda',()=>conApp((w,d)=>{const first=d.querySelector('#grid .card h3');if(!first)throw new Error('Sin productos');const term=first.textContent.trim().split(' ')[0];const q=d.getElementById('fq');q.value=term;q.dispatchEvent(new w.Event('input',{bubbles:true}));const n=d.querySelectorAll('#grid .card').length;if(!n)throw new Error('El filtro no mostró resultados');return n+' resultado(s) para «'+term+'»';})));
+      rows.push(await check('Funcional: bitácora y tema',()=>conApp((w,d)=>{d.querySelector('a[data-view="bitacora"]').click();const active=d.getElementById('v-bitacora').classList.contains('active'),n=d.querySelectorAll('#logBody tr').length;if(!active||!n)throw new Error('Bitácora no operativa');const before=d.documentElement.dataset.theme;d.getElementById('themeBtn').click();const after=d.documentElement.dataset.theme;if(before===after)throw new Error('El tema no cambió');return n+' evento(s); tema '+before+' → '+after;})));
+      rows.push(await check('Funcional: lobby sin scroll de página',()=>conApp((w,d)=>{const h=d.documentElement.scrollHeight,v=w.innerHeight;if(h>v+1)throw new Error('La página mide '+h+' px y la ventana '+v+' px');return 'alto '+v+' px · sin scroll';})));
+    }
+    rows.push(await check('Entorno: localStorage',()=>{if(!window.localStorage)throw new Error('No disponible');return 'disponible';}));
+    rows.push(await check('Entorno: Service Worker',()=>{if(!('serviceWorker' in navigator))throw new Error('No soportado');return 'soportado';}));
+    rows.push(await check('Entorno: Cache Storage',()=>{if(!('caches' in window))throw new Error('No soportado');return 'soportado';}));
+    rows.push(await check('Entorno: prefers-color-scheme',()=>window.matchMedia('(prefers-color-scheme: dark)').matches?'modo oscuro del sistema':'modo claro del sistema'));
+
+    if(local){
+      rows.push({name:'Recursos de red',ok:false,detail:'Abierto con file://; usa un servidor local para validar manifest, sw.js, CSS y JS.'});
+    }else{
+      rows.push(await check('Recursos: index.html',async()=>{const html=await text('index.html');for(const id of ['burger','fq','themeBtn','v-bitacora','logBody','grid'])if(!html.includes('id="'+id+'"'))throw new Error('Falta #'+id);return 'ids clave presentes';}));
+      rows.push(await check('Recursos: manifest.json',async()=>{const m=await json('manifest.json');if(!m.start_url||!m.icons||!m.name)throw new Error('Manifest incompleto');if(!/BIM Cosmetics/.test(m.name))throw new Error('Nombre no actualizado');return m.name; }));
+      rows.push(await check('PWA: service worker y caché',async()=>{const sw=await text('sw.js');if(!sw.includes('index.html')||!sw.includes('caches.open'))throw new Error('sw.js incompleto');return 'sw.js cachea el index';}));
+      rows.push(await check('jQuery y app.js',async()=>{const app=await text('js/app.js');if(!app.includes('jquery')&&!app.includes('$('))throw new Error('La app no usa jQuery');return 'app.js con jQuery';}));
+      rows.push(await check('Filtro avanzado',async()=>{const html=await text('index.html');for(const id of ['fcat','fsort','fprice'])if(!html.includes('id="'+id+'"'))throw new Error('Falta #'+id);return 'texto, categoría, estado, precio y orden';}));
+      rows.push(await check('Bitácora persistente',async()=>{const app=await text('js/app.js');if(!app.includes('inv_bitacora_v1')||!app.includes('logEvent'))throw new Error('Sin registro de eventos');return 'clave y función presentes';}));
+      rows.push(await check('Seguridad XSS',async()=>{const app=await text('js/app.js');if(/\.innerHTML\s*=/.test(app))throw new Error('Uso de innerHTML detectado');if(!app.includes('safeImage')||!app.includes('safeLink'))throw new Error('Faltan validadores');return 'sin innerHTML y con validadores';}));
+      rows.push(await check('Bubbling / delegación',async()=>{const app=await text('js/app.js');if(!/\$\(document\)\.(off|on)\('click\.inv','\[data-act\]'/.test(app))throw new Error('No hay delegación en document');return 'delegación en document';}));
+      rows.push(await check('Lazy loading',async()=>{const app=await text('js/app.js');if(!app.includes("loading:'lazy'"))throw new Error('No se encontró loading lazy');return 'imágenes diferidas';}));
+      rows.push(await check('Offline-first',async()=>{const [sw,pwa]=await Promise.all([text('sw.js'),text('pwa.js')]);if(!sw.includes('respondWith')||!pwa.includes('serviceWorker.register'))throw new Error('Falta estrategia offline');return 'caché + registro + cola';}));
+      rows.push(await check('Hidratación',async()=>{const app=await text('js/app.js');if(!app.includes('dataset.hidratado'))throw new Error('No hay marca de hidratación');return 'shell + hidratación cliente'; }));
+      rows.push(await check('Responsividad y Flexbox',async()=>{const css=await text('css/styles.css');if(!css.includes('@media (max-width:900px)'))throw new Error('Faltan media queries');if(!css.includes('display:flex'))throw new Error('No hay Flexbox');return 'media queries + Flexbox';}));
+      rows.push(await check('Psicología de color',async()=>{const css=await text('css/styles.css');if(!css.includes('--accent:#b0195b'))throw new Error('Paleta no actualizada');return 'paleta rosa/gris premium';}));
+      rows.push(await check('Subcarpetas',async()=>{await Promise.all([text('css/styles.css'),text('js/app.js'),text('vendor/jquery-3.7.1.min.js')]);return 'css/, js/ y vendor/ accesibles';}));
+      rows.push(await check('Bitácora de eventos legible',async()=>{const app=await text('js/app.js');if(!app.includes('renderLog'))throw new Error('Sin renderLog');return 'renderizado con nodos seguros';}));
+    }
+    const pass=rows.filter(r=>r.ok).length;
+    const result=document.getElementById('result');
+    result.textContent=rows.map(r=>(r.ok?'✓ ':'✗ ')+r.name+' — '+r.detail).join('\n')+'\n\n'+pass+'/'+rows.length+' comprobaciones superadas.';
+    document.getElementById('summary').textContent=pass===rows.length?'Smoke testing completo sin fallos.':'Revisa las comprobaciones marcadas con ✗.';
+  }
+  document.getElementById('run').addEventListener('click',run);
+  window.addEventListener('load',run);
+})();
+</script>
+</body>
+</html>

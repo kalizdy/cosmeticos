@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BIM Cosmetics · Importadora</title>
 <meta name="description" content="Catálogo e inventario de BIM Cosmetics, importadora de cosméticos: cuidado facial, maquillaje, perfumes y cabello.">
-<link rel="stylesheet" href="css/styles.css?v=cosmetics10">
-<link rel="stylesheet" href="css/mejoras.css?v=cosmetics10">
+<link rel="stylesheet" href="css/styles.css?v=cosmetics12">
+<link rel="stylesheet" href="css/mejoras.css?v=cosmetics12">
 <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#071426">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="BIM Cosmetics">
 <link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -21,6 +21,8 @@
     <span class="currency warn"><span aria-hidden="true">⚠</span><b id="topLow">0</b><em>alertas</em></span>
     <span class="currency gold"><b id="topValue">Bs 0</b></span>
   </div>
+  <button class="icon-btn cart-btn" id="cartBtn" type="button" aria-label="Abrir carrito de pedidos" title="Carrito de pedidos"><span aria-hidden="true">🛒</span><b id="cartCount" class="cart-badge" hidden>0</b></button>
+  <button class="icon-btn cloud-btn" id="cloudBtn" type="button" data-state="sync" aria-label="Sincronizar con Supabase" title="Conectando con Supabase…"><span id="cloudIcon" aria-hidden="true">☁</span></button>
   <button class="icon-btn" id="themeBtn" aria-label="Cambiar entre modo día y noche">🌙</button>
 </header>
 <div class="scrim" id="scrim"></div>
@@ -105,7 +107,7 @@
         <div class="head-actions"><button class="btn" id="logRefresh">↻ Actualizar</button><button class="btn danger" id="clearLog">Vaciar bitácora</button></div>
       </div>
       <div class="toolbar" id="logToolbar">
-        <div class="field"><label for="logType">Filtrar por tipo</label><select id="logType"><option value="">Todos</option><option value="Sistema">Sistema</option><option value="Producto">Producto</option><option value="Movimiento">Movimiento</option><option value="Favorito">Favorito</option><option value="Contacto">Contacto</option><option value="Interfaz">Interfaz</option><option value="Exportación">Exportación</option></select></div>
+        <div class="field"><label for="logType">Filtrar por tipo</label><select id="logType"><option value="">Todos</option><option value="Sistema">Sistema</option><option value="Producto">Producto</option><option value="Movimiento">Movimiento</option><option value="Favorito">Favorito</option><option value="Contacto">Contacto</option><option value="Pedido">Pedido</option><option value="Interfaz">Interfaz</option><option value="Exportación">Exportación</option></select></div>
         <div class="field" style="flex:2 1 260px"><label>Hidratación y persistencia</label><p class="meta" style="margin:0">Los eventos se guardan en localStorage y se muestran con jQuery creando nodos seguros (sin innerHTML).</p></div>
       </div>
       <div class="tbl"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Evento</th></tr></thead><tbody id="logBody"></tbody></table></div>
@@ -173,9 +175,7 @@
     </div>
     <div class="aside-card">
       <div class="aside-head"><h3>Destacados</h3><a href="#inventario" data-view="inventario">Ver todo</a></div>
-      <a class="mini-product" href="#inventario" data-view="inventario"><img src="img/perfume.jpg" alt="" width="900" height="1350" loading="lazy"><span><strong>Perfume N°5</strong><small>Bs 690</small></span></a>
-      <a class="mini-product" href="#inventario" data-view="inventario"><img src="img/labial.jpg" alt="" width="900" height="1260" loading="lazy"><span><strong>Labial Clinique</strong><small>Bs 145</small></span></a>
-      <a class="mini-product" href="#inventario" data-view="inventario"><img src="img/brocha.jpg" alt="" width="900" height="675" loading="lazy"><span><strong>Set Pro</strong><small>Bs 320</small></span></a>
+      <div id="miniProducts"></div>
     </div>
     <div class="aside-card aside-help">
       <strong>¿Necesitas asesoría?</strong>
@@ -245,8 +245,26 @@
           <div class="ok" id="okMsg" style="display:none">Consulta guardada en este dispositivo. No se ha enviado a un servidor.</div>
           <div class="foot"><button class="btn primary">Guardar consulta</button></div>
         </form></div>
-<script src="vendor/jquery-3.7.1.min.js"></script><script src="js/config.js?v=bim1"></script>
-<script src="js/app.js?v=cosmetics10"></script>
-<script src="sync-config.js?v=bim1"></script><script src="js/cola-offline.js?v=bim1"></script><script src="pwa.js?v=cosmetics10"></script>
+<div class="modal" id="mCart" role="dialog" aria-modal="true" aria-labelledby="cartTitle" hidden>
+  <div class="dialog cart-dialog">
+    <div class="modal-heading"><h2 id="cartTitle">Tu pedido</h2><button type="button" class="icon-btn" data-close aria-label="Cerrar carrito">✕</button></div>
+    <div class="ok order-ok" id="orderOk" hidden></div>
+    <div id="cartEmpty" class="empty cart-empty">Tu carrito está vacío. Añade productos desde el catálogo.</div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-total"><span>Total estimado</span><b id="cartTotal">Bs 0,00</b></div>
+    <form id="fOrder" novalidate>
+      <div class="row">
+        <div class="fgroup"><label for="oname">Nombre completo</label><input id="oname" required minlength="3" maxlength="40"><div class="err"></div></div>
+        <div class="fgroup"><label for="ophone">Teléfono / WhatsApp</label><input id="ophone" type="tel" required><div class="err"></div></div>
+      </div>
+      <div class="fgroup"><label for="onote">Nota para el pedido (opcional)</label><input id="onote" maxlength="120" placeholder="Dirección, referencia o color preferido"></div>
+      <div class="foot"><button type="button" class="btn" data-close>Seguir comprando</button><button class="btn primary">Confirmar pedido</button></div>
+    </form>
+  </div>
+</div>
+<script src="vendor/jquery-3.7.1.min.js"></script><script src="js/config.js?v=bim2"></script>
+<script src="js/app.js?v=cosmetics12"></script>
+<script src="js/nube.js?v=bim4"></script>
+<script src="sync-config.js?v=bim1"></script><script src="js/cola-offline.js?v=bim1"></script><script src="pwa.js?v=cosmetics12"></script>
 </body>
 </html>

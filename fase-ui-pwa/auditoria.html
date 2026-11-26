@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auditoría y smoke testing · Lumière Import</title>
+<title>Auditoría y smoke testing · BIM Cosmetics</title>
 <style>
   :root{--bg:#f4f4f6;--surface:#fff;--ink:#211a20;--muted:#6b6470;--line:#e2dfe5;--accent:#b0195b;--ok:#15803d;--warn:#a16207;--bad:#c0392b}
   *{box-sizing:border-box}
@@ -25,7 +25,7 @@
 </style>
 </head>
 <body>
-<h1>Auditoría y smoke testing · Lumière Import</h1>
+<h1>Auditoría y smoke testing · BIM Cosmetics</h1>
 <p>Importadora de cosméticos. Esta página resume el checklist del proyecto y ejecuta comprobaciones automáticas de humo (smoke testing) en el navegador. No modifica ni borra registros.</p>
 <div class="nav"><a href="index.html">← Volver al catálogo</a><a href="diagnostico.html">Diagnóstico técnico</a><button class="btn primary" id="run">▶ Ejecutar smoke testing</button></div>
 
@@ -63,8 +63,10 @@
 <tr><td>Encapsulamiento</td><td>Lógica dentro de <code>$(function(){...})</code>, IIFE en <code>pwa.js</code> y <code>cola-offline.js</code>, namespace de eventos y API congelada.</td><td><span class="tag ok">Cumple</span></td></tr>
 <tr><td>Mobile first + gris</td><td>Base gris (<code>#f4f4f6</code>), una columna por defecto y mejoras progresivas; acento rosa cosmético.</td><td><span class="tag ok">Cumple</span></td></tr>
 <tr><td>Flexbox</td><td>Header, barras, acciones, chips, redes, pestañas y tarjetas usan <code>display:flex</code>.</td><td><span class="tag ok">Cumple</span></td></tr>
-<tr><td>Psicología de color</td><td>Rosa/magenta para belleza y cuidado, dorado para premium, gris neutro para orden y violeta para perfumes.</td><td><span class="tag ok">Cumple</span></td></tr>
-<tr><td>Smoke testing</td><td>Este panel ejecuta comprobaciones de estructura, recursos, PWA, seguridad y accesibilidad básica.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Psicología de color</td><td>Azul marino para confianza y tecnología, cian para acción, dorado para premium y rosa para belleza.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Carrito y pedidos</td><td>Carrito persistente, cantidades, total, formulario de cliente, descuento de stock, pedido en <code>bim_pedidos_v1</code> y evento en bitácora.</td><td><span class="tag ok">Cumple</span></td></tr>
+<tr><td>Base de datos Supabase</td><td>REST + sincronización offline-first en la tabla <code>bim_cloud</code>. Falta ejecutar <code>supabase/schema.sql</code> en el panel de Supabase para crear la tabla.</td><td><span class="tag partial">Integración lista</span></td></tr>
+<tr><td>Smoke testing</td><td>Este panel ejecuta comprobaciones de estructura, recursos, PWA, seguridad, Supabase y lobby sin scroll.</td><td><span class="tag ok">Cumple</span></td></tr>
 </tbody>
 </table>
 
@@ -107,6 +109,9 @@
       rows.push(await check('Funcional: catálogo renderizado',()=>conApp((w,d)=>{const n=d.querySelectorAll('#grid .card').length;if(!n)throw new Error('No se pintaron tarjetas');return n+' tarjetas';})));
       rows.push(await check('Funcional: filtro de búsqueda',()=>conApp((w,d)=>{const first=d.querySelector('#grid .card h3');if(!first)throw new Error('Sin productos');const term=first.textContent.trim().split(' ')[0];const q=d.getElementById('fq');q.value=term;q.dispatchEvent(new w.Event('input',{bubbles:true}));const n=d.querySelectorAll('#grid .card').length;if(!n)throw new Error('El filtro no mostró resultados');return n+' resultado(s) para «'+term+'»';})));
       rows.push(await check('Funcional: bitácora y tema',()=>conApp((w,d)=>{d.querySelector('a[data-view="bitacora"]').click();const active=d.getElementById('v-bitacora').classList.contains('active'),n=d.querySelectorAll('#logBody tr').length;if(!active||!n)throw new Error('Bitácora no operativa');const before=d.documentElement.dataset.theme;d.getElementById('themeBtn').click();const after=d.documentElement.dataset.theme;if(before===after)throw new Error('El tema no cambió');return n+' evento(s); tema '+before+' → '+after;})));
+      rows.push(await check('Funcional: lobby sin scroll de página',()=>conApp((w,d)=>{const h=d.documentElement.scrollHeight,v=w.innerHeight;if(h>v+1)throw new Error('La página mide '+h+' px y la ventana '+v+' px');return 'alto '+v+' px · sin scroll';})));
+      rows.push(await check('Nube BIM: Supabase configurado',()=>conApp((w,d)=>{if(!w.BIM_CLOUD||!w.BIM_CLOUD.url||!w.BIM_CLOUD.key)throw new Error('Falta configuración BIM_CLOUD');if(!w.BIM_NUBE)throw new Error('El módulo de nube no arrancó');return w.BIM_CLOUD.table+' · '+w.BIM_CLOUD.url;})));
+      rows.push(await check('Funcional: carrito y botones',()=>conApp((w,d)=>{const add=d.querySelector('#grid .card [data-act="cart"]');if(!add)throw new Error('Falta el botón Pedir');add.click();if(d.getElementById('cartCount').textContent==='0')throw new Error('El contador no subió');d.getElementById('cartBtn').click();if(!d.getElementById('mCart').classList.contains('show'))throw new Error('El carrito no abrió');const rows=d.querySelectorAll('#cartItems .cart-row').length;if(!rows)throw new Error('El carrito está vacío');d.querySelector('#mCart [data-close]').click();w.localStorage.removeItem('bim_carrito_v1');return rows+' línea(s); carrito y modal operativos';})));
     }
     rows.push(await check('Entorno: localStorage',()=>{if(!window.localStorage)throw new Error('No disponible');return 'disponible';}));
     rows.push(await check('Entorno: Service Worker',()=>{if(!('serviceWorker' in navigator))throw new Error('No soportado');return 'soportado';}));
@@ -117,7 +122,7 @@
       rows.push({name:'Recursos de red',ok:false,detail:'Abierto con file://; usa un servidor local para validar manifest, sw.js, CSS y JS.'});
     }else{
       rows.push(await check('Recursos: index.html',async()=>{const html=await text('index.html');for(const id of ['burger','fq','themeBtn','v-bitacora','logBody','grid'])if(!html.includes('id="'+id+'"'))throw new Error('Falta #'+id);return 'ids clave presentes';}));
-      rows.push(await check('Recursos: manifest.json',async()=>{const m=await json('manifest.json');if(!m.start_url||!m.icons||!m.name)throw new Error('Manifest incompleto');if(!/Lumière/.test(m.name))throw new Error('Nombre no actualizado');return m.name; }));
+      rows.push(await check('Recursos: manifest.json',async()=>{const m=await json('manifest.json');if(!m.start_url||!m.icons||!m.name)throw new Error('Manifest incompleto');if(!/BIM Cosmetics/.test(m.name))throw new Error('Nombre no actualizado');return m.name; }));
       rows.push(await check('PWA: service worker y caché',async()=>{const sw=await text('sw.js');if(!sw.includes('index.html')||!sw.includes('caches.open'))throw new Error('sw.js incompleto');return 'sw.js cachea el index';}));
       rows.push(await check('jQuery y app.js',async()=>{const app=await text('js/app.js');if(!app.includes('jquery')&&!app.includes('$('))throw new Error('La app no usa jQuery');return 'app.js con jQuery';}));
       rows.push(await check('Filtro avanzado',async()=>{const html=await text('index.html');for(const id of ['fcat','fsort','fprice'])if(!html.includes('id="'+id+'"'))throw new Error('Falta #'+id);return 'texto, categoría, estado, precio y orden';}));
@@ -128,7 +133,7 @@
       rows.push(await check('Offline-first',async()=>{const [sw,pwa]=await Promise.all([text('sw.js'),text('pwa.js')]);if(!sw.includes('respondWith')||!pwa.includes('serviceWorker.register'))throw new Error('Falta estrategia offline');return 'caché + registro + cola';}));
       rows.push(await check('Hidratación',async()=>{const app=await text('js/app.js');if(!app.includes('dataset.hidratado'))throw new Error('No hay marca de hidratación');return 'shell + hidratación cliente'; }));
       rows.push(await check('Responsividad y Flexbox',async()=>{const css=await text('css/styles.css');if(!css.includes('@media (max-width:900px)'))throw new Error('Faltan media queries');if(!css.includes('display:flex'))throw new Error('No hay Flexbox');return 'media queries + Flexbox';}));
-      rows.push(await check('Psicología de color',async()=>{const css=await text('css/styles.css');if(!css.includes('--accent:#b0195b'))throw new Error('Paleta no actualizada');return 'paleta rosa/gris premium';}));
+      rows.push(await check('Psicología de color',async()=>{const css=await text('css/mejoras.css');if(!css.includes('--gold:#e8b34b'))throw new Error('Paleta no actualizada');return 'azul marino, cian y dorado premium';}));
       rows.push(await check('Subcarpetas',async()=>{await Promise.all([text('css/styles.css'),text('js/app.js'),text('vendor/jquery-3.7.1.min.js')]);return 'css/, js/ y vendor/ accesibles';}));
       rows.push(await check('Bitácora de eventos legible',async()=>{const app=await text('js/app.js');if(!app.includes('renderLog'))throw new Error('Sin renderLog');return 'renderizado con nodos seguros';}));
     }

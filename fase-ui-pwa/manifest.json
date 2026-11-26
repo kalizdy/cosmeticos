@@ -1,15 +1,15 @@
 {
   "id": "./",
-  "name": "Lumière Import · Cosméticos",
-  "short_name": "Lumière",
-  "description": "Catálogo e inventario de la importadora de cosméticos Lumière Import.",
+  "name": "BIM Cosmetics · Importadora",
+  "short_name": "BIM",
+  "description": "Catálogo e inventario de la importadora de cosméticos BIM Cosmetics.",
   "lang": "es",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f4f4f6",
-  "theme_color": "#b0195b",
+  "background_color": "#071426",
+  "theme_color": "#071426",
   "categories": ["shopping", "business", "productivity"],
   "icons": [
     {

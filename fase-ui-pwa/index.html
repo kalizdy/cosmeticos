@@ -3,31 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lumière Import · Cosméticos</title>
-<meta name="description" content="Catálogo e inventario de Lumière Import, importadora de cosméticos: cuidado facial, maquillaje, perfumes y cabello.">
-<link rel="stylesheet" href="css/styles.css?v=cosmetics6">
-<link rel="stylesheet" href="css/mejoras.css?v=cosmetics6">
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#b0195b">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Lumière Import">
+<title>BIM Cosmetics · Importadora</title>
+<meta name="description" content="Catálogo e inventario de BIM Cosmetics, importadora de cosméticos: cuidado facial, maquillaje, perfumes y cabello.">
+<link rel="stylesheet" href="css/styles.css?v=cosmetics12">
+<link rel="stylesheet" href="css/mejoras.css?v=cosmetics12">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#071426">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="BIM Cosmetics">
 <link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
 </head>
 <body class="inventario-pwa">
-<header>
+<header class="lobby-top">
   <button class="icon-btn burger" id="burger" aria-label="Abrir menú" aria-controls="side" aria-expanded="false"><span></span><span></span><span></span></button>
-  <a class="brand" href="#inicio" data-view="inicio" aria-label="Lumière Import, ir al inicio"><span class="logo" id="logo">💄</span><span class="brand-text"><span id="brandName">Lumière Import</span><small>Cosméticos importados</small></span></a>
+  <a class="brand" href="#inicio" data-view="inicio" aria-label="BIM Cosmetics, ir al inicio"><span class="logo" id="logo">B</span><span class="brand-text"><span id="brandName">BIM Cosmetics</span><small>Importadora de cosméticos</small></span><span class="level">PREMIUM</span></a>
   <div class="spacer"></div>
-  <a class="btn primary header-cta" href="#inventario">Ver catálogo</a>
+  <div class="top-stats" aria-label="Resumen del catálogo">
+    <span class="currency"><span aria-hidden="true">🛍</span><b id="topProducts">0</b><em>productos</em></span>
+    <span class="currency warn"><span aria-hidden="true">⚠</span><b id="topLow">0</b><em>alertas</em></span>
+    <span class="currency gold"><b id="topValue">Bs 0</b></span>
+  </div>
+  <button class="icon-btn cart-btn" id="cartBtn" type="button" aria-label="Abrir carrito de pedidos" title="Carrito de pedidos"><span aria-hidden="true">🛒</span><b id="cartCount" class="cart-badge" hidden>0</b></button>
+  <button class="icon-btn cloud-btn" id="cloudBtn" type="button" data-state="sync" aria-label="Sincronizar con Supabase" title="Conectando con Supabase…"><span id="cloudIcon" aria-hidden="true">☁</span></button>
   <button class="icon-btn" id="themeBtn" aria-label="Cambiar entre modo día y noche">🌙</button>
 </header>
 <div class="scrim" id="scrim"></div>
 <div class="layout">
   <nav class="side" id="side" aria-label="Navegación principal">
-    <a href="#inicio" data-view="inicio">Inicio</a>
-    <a href="#inventario" data-view="inventario">Catálogo</a>
-    <a href="#movimientos" data-view="movimientos">Movimientos</a>
-    <a href="#bitacora" data-view="bitacora">Bitácora</a>
-    <a href="#responsable" data-view="responsable">Nosotros</a>
-    <a href="#contacto" data-view="contacto">Contacto</a>
+    <a href="#inicio" data-view="inicio"><span class="nav-ico" aria-hidden="true">⌂</span><span>Inicio</span></a>
+    <a href="#inventario" data-view="inventario"><span class="nav-ico" aria-hidden="true">◈</span><span>Catálogo</span></a>
+    <a href="#movimientos" data-view="movimientos"><span class="nav-ico" aria-hidden="true">⇄</span><span>Movimientos</span></a>
+    <a href="#bitacora" data-view="bitacora"><span class="nav-ico" aria-hidden="true">▤</span><span>Bitácora</span></a>
+    <a href="#responsable" data-view="responsable"><span class="nav-ico" aria-hidden="true">✦</span><span>Nosotros</span></a>
+    <a href="#contacto" data-view="contacto"><span class="nav-ico" aria-hidden="true">✉</span><span>Contacto</span></a>
     <button type="button" id="catToggle" aria-expanded="false" aria-controls="catList">Categorías ▾</button><div id="catList" style="display:none"></div>
   </nav>
   <main>
@@ -41,7 +47,7 @@
           <ul class="hero-trust"><li>✓ Productos originales</li><li>✓ Importación directa</li><li>✓ Envíos en La Paz</li></ul>
         </div>
         <div class="hero-media">
-          <img src="img/hero-cosmetics.jpg" alt="Cosméticos importados de Lumière: brochas, labiales, rubor y paleta" width="1400" height="1400" fetchpriority="high" decoding="async">
+          <img src="img/hero-cosmetics.jpg" alt="Cosméticos importados de BIM: brochas, labiales, rubor y paleta" width="1400" height="1400" fetchpriority="high" decoding="async">
           <div class="hero-badge"><span><small>Colección destacada</small><strong>Glow essentials</strong></span><span class="hero-badge-dot">✦</span></div>
         </div>
       </div>
@@ -56,7 +62,7 @@
       <div class="home-content">
         <div id="home-destacados" role="tabpanel" aria-labelledby="subtab-destacados" class="home-panel active"><div class="carousel" id="carousel">
         <div class="track" id="track">
-          <div class="slide s1"><h2>Bienvenido a Lumière Import</h2><p>Importamos belleza: controla el catálogo, las entradas y las salidas de cada cosmético.</p></div>
+          <div class="slide s1"><h2>Bienvenido a BIM Cosmetics</h2><p>Importamos belleza: controla el catálogo, las entradas y las salidas de cada cosmético.</p></div>
           <div class="slide s2"><h2 id="lowTitle">Reposición de cosméticos</h2><p id="lowText"></p></div>
           <div class="slide s3"><h2 id="valTitle">Valor del catálogo</h2><p id="valText"></p></div>
         </div>
@@ -64,8 +70,7 @@
         <button class="car-btn next" aria-label="Siguiente">›</button>
         <div class="dots" id="dots"></div><button class="btn pausa-carrusel" id="pauseCarousel" type="button">Pausar</button>
       </div><p class="sub ayuda-resumen">Usa las pestañas para consultar los indicadores, las categorías y los últimos productos.</p></div>
-        <div id="home-indicadores" role="tabpanel" aria-labelledby="subtab-indicadores" class="home-panel" hidden><button class="btn sm" id="toggleStats" style="margin-bottom:10px">Ocultar resumen</button>
-      <div class="stats" id="stats"></div></div>
+        <div id="home-indicadores" role="tabpanel" aria-labelledby="subtab-indicadores" class="home-panel" hidden><button class="btn sm" id="toggleStats" style="margin-bottom:10px">Ocultar resumen</button></div>
         <div id="home-categorias" role="tabpanel" aria-labelledby="subtab-categorias" class="home-panel" hidden><div class="panel"><h2 style="margin:0 0 6px;font-size:18px">Stock por categoría</h2><div id="catChart"></div></div><div class="paginador" id="chartPager"></div></div>
         <div id="home-recientes" role="tabpanel" aria-labelledby="subtab-recientes" class="home-panel" hidden><div class="grid" id="recent"></div><div class="paginador" id="recentPager"></div></div>
       </div>
@@ -102,7 +107,7 @@
         <div class="head-actions"><button class="btn" id="logRefresh">↻ Actualizar</button><button class="btn danger" id="clearLog">Vaciar bitácora</button></div>
       </div>
       <div class="toolbar" id="logToolbar">
-        <div class="field"><label for="logType">Filtrar por tipo</label><select id="logType"><option value="">Todos</option><option value="Sistema">Sistema</option><option value="Producto">Producto</option><option value="Movimiento">Movimiento</option><option value="Favorito">Favorito</option><option value="Contacto">Contacto</option><option value="Interfaz">Interfaz</option><option value="Exportación">Exportación</option></select></div>
+        <div class="field"><label for="logType">Filtrar por tipo</label><select id="logType"><option value="">Todos</option><option value="Sistema">Sistema</option><option value="Producto">Producto</option><option value="Movimiento">Movimiento</option><option value="Favorito">Favorito</option><option value="Contacto">Contacto</option><option value="Pedido">Pedido</option><option value="Interfaz">Interfaz</option><option value="Exportación">Exportación</option></select></div>
         <div class="field" style="flex:2 1 260px"><label>Hidratación y persistencia</label><p class="meta" style="margin:0">Los eventos se guardan en localStorage y se muestran con jQuery creando nodos seguros (sin innerHTML).</p></div>
       </div>
       <div class="tbl"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Evento</th></tr></thead><tbody id="logBody"></tbody></table></div>
@@ -114,7 +119,7 @@
       </div>
       <div class="contact-shell">
         <div class="contact-aside">
-          <img src="img/contacto.jpg" alt="Productos de maquillaje importados por Lumière" width="1100" height="733" loading="lazy" decoding="async">
+          <img src="img/contacto.jpg" alt="Productos de maquillaje importados por BIM Cosmetics" width="1100" height="733" loading="lazy" decoding="async">
           <div class="contact-aside-copy">
             <h3>Asesoría personalizada</h3>
             <p>Te ayudamos a elegir productos según tu tipo de piel, rutina y presupuesto.</p>
@@ -158,12 +163,39 @@
       </div>
     </section>
   </main>
+  <aside class="lobby-aside" aria-label="Panel de BIM Cosmetics">
+    <div class="aside-card assistant">
+      <div class="aside-avatar">B</div>
+      <div class="aside-id"><strong>BIM Cosmetics</strong><small>Importadora · La Paz</small></div>
+      <span class="online-dot" title="En línea">●</span>
+    </div>
+    <div class="aside-card">
+      <div class="aside-head"><h3>Resumen</h3><span class="pill">Hoy</span></div>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="aside-card">
+      <div class="aside-head"><h3>Destacados</h3><a href="#inventario" data-view="inventario">Ver todo</a></div>
+      <div id="miniProducts"></div>
+    </div>
+    <div class="aside-card aside-help">
+      <strong>¿Necesitas asesoría?</strong>
+      <p>Te ayudamos a elegir tu rutina ideal.</p>
+      <a class="btn primary" href="#contacto" data-view="contacto">Hablar con BIM</a>
+    </div>
+  </aside>
 </div>
 
-<footer class="sitefoot">
-  <div class="foot-brand"><strong>Lumière Import</strong><span id="fInfo"></span></div>
-  <div class="foot-links"><a href="#inventario">Catálogo</a><a href="#responsable">Nosotros</a><a href="auditoria.html">Auditoría</a><a href="diagnostico.html">Diagnóstico</a></div>
-  <div class="socials"></div>
+<footer class="lobby-bar">
+  <div class="bar-brand"><span class="bar-logo">B</span><div><strong>BIM Cosmetics</strong><small id="fInfo"></small></div></div>
+  <nav class="bar-nav" aria-label="Accesos rápidos">
+    <a href="#inicio" data-view="inicio"><span aria-hidden="true">⌂</span>Inicio</a>
+    <a href="#inventario" data-view="inventario"><span aria-hidden="true">◈</span>Catálogo</a>
+    <a href="#movimientos" data-view="movimientos"><span aria-hidden="true">⇄</span>Movimientos</a>
+    <a href="#bitacora" data-view="bitacora"><span aria-hidden="true">▤</span>Bitácora</a>
+    <a href="#responsable" data-view="responsable"><span aria-hidden="true">✦</span>Nosotros</a>
+    <a href="#contacto" data-view="contacto"><span aria-hidden="true">✉</span>Contacto</a>
+  </nav>
+  <a class="cta-gold" href="#inventario" data-view="inventario">Ver catálogo <span aria-hidden="true">›</span></a>
 </footer>
 
 <div class="modal" id="mProd" role="dialog" aria-modal="true" aria-labelledby="mProdTitle" hidden><form class="dialog" id="fProd" novalidate>
@@ -213,8 +245,26 @@
           <div class="ok" id="okMsg" style="display:none">Consulta guardada en este dispositivo. No se ha enviado a un servidor.</div>
           <div class="foot"><button class="btn primary">Guardar consulta</button></div>
         </form></div>
-<script src="vendor/jquery-3.7.1.min.js"></script><script src="js/config.js"></script>
-<script src="js/app.js?v=cosmetics6"></script>
-<script src="sync-config.js"></script><script src="js/cola-offline.js"></script><script src="pwa.js?v=cosmetics6"></script>
+<div class="modal" id="mCart" role="dialog" aria-modal="true" aria-labelledby="cartTitle" hidden>
+  <div class="dialog cart-dialog">
+    <div class="modal-heading"><h2 id="cartTitle">Tu pedido</h2><button type="button" class="icon-btn" data-close aria-label="Cerrar carrito">✕</button></div>
+    <div class="ok order-ok" id="orderOk" hidden></div>
+    <div id="cartEmpty" class="empty cart-empty">Tu carrito está vacío. Añade productos desde el catálogo.</div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-total"><span>Total estimado</span><b id="cartTotal">Bs 0,00</b></div>
+    <form id="fOrder" novalidate>
+      <div class="row">
+        <div class="fgroup"><label for="oname">Nombre completo</label><input id="oname" required minlength="3" maxlength="40"><div class="err"></div></div>
+        <div class="fgroup"><label for="ophone">Teléfono / WhatsApp</label><input id="ophone" type="tel" required><div class="err"></div></div>
+      </div>
+      <div class="fgroup"><label for="onote">Nota para el pedido (opcional)</label><input id="onote" maxlength="120" placeholder="Dirección, referencia o color preferido"></div>
+      <div class="foot"><button type="button" class="btn" data-close>Seguir comprando</button><button class="btn primary">Confirmar pedido</button></div>
+    </form>
+  </div>
+</div>
+<script src="vendor/jquery-3.7.1.min.js"></script><script src="js/config.js?v=bim2"></script>
+<script src="js/app.js?v=cosmetics12"></script>
+<script src="js/nube.js?v=bim4"></script>
+<script src="sync-config.js?v=bim1"></script><script src="js/cola-offline.js?v=bim1"></script><script src="pwa.js?v=cosmetics12"></script>
 </body>
 </html>
